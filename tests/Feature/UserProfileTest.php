@@ -11,6 +11,8 @@ use Tests\TestCase;
 
 class UserProfileTest extends TestCase
 {
+    use RefreshDatabase;
+
     /** @test */
     public function a_user_profile_belongs_to_a_user()
     {

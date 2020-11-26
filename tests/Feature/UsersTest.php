@@ -10,6 +10,8 @@ use Tests\TestCase;
 
 class UsersTest extends TestCase
 {
+    use RefreshDatabase;
+
     /** @test */
     public function can_get_the_user_profile_associated_to_a_user()
     {
