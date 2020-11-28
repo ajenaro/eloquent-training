@@ -23,3 +23,10 @@ Route::get('/has-one', function () {
 
     return $user->profile;
 });
+
+Route::get('/has-many', function () {
+
+    $user = App\User::first();
+
+    return $user->posts;
+});

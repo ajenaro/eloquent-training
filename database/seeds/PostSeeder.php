@@ -13,11 +13,12 @@ class PostSeeder extends Seeder
      */
     public function run()
     {
-        $users = User::pluck('id');
-        $users->each(function ($userId) {
-            factory(Post::class)->times(rand(1, 10))->create([
+        $userId = User::first()->id;
+
+        //$users->each(function ($userId) {
+            factory(Post::class)->times(2)->create([
                   'author_id' => $userId,
               ]);
-        });
+        //});
     }
 }
