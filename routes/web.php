@@ -1,5 +1,6 @@
 <?php
 
+use App\User;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,4 +30,23 @@ Route::get('/has-many', function () {
     $user = App\User::first();
 
     return $user->posts;
+});
+
+Route::get('filter-query', function () {
+
+    $user = User::first();
+
+    return $user->posts()
+        ->where('featured', true)
+        ->where('published_at', '<=', now())
+        ->get();
+});
+
+Route::get('filter-collection', function () {
+
+    $user = User::first();
+
+    return $user->posts
+        ->where('featured', true)
+        ->where('published_at', '<=', now());
 });

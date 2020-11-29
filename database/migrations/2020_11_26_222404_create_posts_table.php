@@ -16,12 +16,14 @@ class CreatePostsTable extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
 
-            $table->unsignedBigInteger('author_id');
+            $table->unsignedBigInteger('author_id')->nullable();
             $table->foreign('author_id')->references('id')->on('users')->onDelete('CASCADE');
             $table->string('title');
             $table->mediumText('content');
+            $table->boolean('featured')->default(false);
 
             $table->timestamps();
+            $table->timestamp('published_at')->nullable();
         });
     }
 

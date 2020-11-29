@@ -3,8 +3,10 @@
 namespace App;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -39,11 +41,24 @@ class User extends Authenticatable
 
     public function profile()
     {
-        return $this->hasOne(UserProfile::class);
+        return $this->hasOne(UserProfile::class)->withDefault(function ($profile) {
+            $profile->website = 'https://styde.net/perfil/' . Str::slug($this->name);
+            $profile->job_title = 'Developer';
+        });
     }
 
     public function posts()
     {
         return $this->hasMany(Post::class, 'author_id');
+    }
+
+    public function publishedPosts()
+    {
+        return $this->posts()->where('published_at', '<=', now());
+    }
+
+    public function getNameAttribute($value)
+    {
+        return $value;
     }
 }

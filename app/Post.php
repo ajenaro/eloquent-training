@@ -12,16 +12,26 @@ class Post extends Model
 
     public function author()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withDefault([
+            'name' => 'Styde'
+        ]);
     }
 
     public function categories()
     {
-        return $this->belongsToMany(Category::class);
+        return $this->belongsToMany(Category::class)
+            ->withPivot(['featured'])
+            ->withTimestamps();
     }
 
     public function addCategories(Category ...$categories)
     {
-        $this->categories()->sync(new Collection($categories));
+        $this->categories()->syncWithoutDetaching(new Collection($categories));
+    }
+
+    public function addFeaturedCategory(Category $category)
+    {
+        $this->categories()->detach($category);
+        $this->categories()->attach($category, ['featured' => true]);
     }
 }

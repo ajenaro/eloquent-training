@@ -54,4 +54,44 @@ class UsersTest extends TestCase
         $this->assertTrue($posts[0]->is($firstPost));
         $this->assertTrue($posts[1]->is($secondPost));
     }
+
+    /** @test */
+    public function get_the_published_posts_of_a_user()
+    {
+        $user = factory(User::class)->create();
+
+        $published = factory(Post::class)->create([
+            'author_id' => $user->id,
+            'published_at' => now()
+        ]);
+
+        $draft = factory(Post::class)->create([
+              'author_id' => $user->id,
+              'published_at' => null
+          ]);
+
+        $scheduled = factory(Post::class)->create([
+              'author_id' => $user->id,
+              'published_at' => now()->addDay()
+          ]);
+
+        $this->assertInstanceOf(HasMany::class, $user->posts());
+        $this->assertInstanceOf(Collection::class, $user->publishedPosts);
+        $this->assertCount(3, $user->posts);
+        $this->assertCount(1, $user->publishedPosts);
+        $this->assertTrue($user->publishedPosts->first()->is($published));
+    }
+
+    /** @test */
+    function users_without_profile_are_assigned_a_default_profile()
+    {
+        $user = factory(User::class)->create([
+            'name' => 'Antonio',
+        ]);
+
+        $this->assertInstanceOf(UserProfile::class, $user->profile);
+        $this->assertFalse($user->profile->exists);
+        $this->assertSame('Developer', $user->profile->job_title);
+        $this->assertSame('https://styde.net/perfil/antonio', $user->profile->website);
+    }
 }
